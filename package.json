@@ -16,8 +16,7 @@
     "db:push": "turbo -F @showly/db db:push",
     "db:studio": "turbo -F @showly/db db:studio",
     "db:generate": "turbo -F @showly/db db:generate",
-    "db:migrate": "turbo -F @showly/db db:migrate",
-    "postinstall": "turbo db:generate"
+    "db:migrate": "turbo -F @showly/db db:migrate"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
