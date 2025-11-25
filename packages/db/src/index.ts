@@ -1,9 +1,3 @@
-import { PrismaClient } from "../prisma/generated/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-
-const adapter = new PrismaPg({
-	connectionString: process.env.DATABASE_URL || "",
-});
-const prisma = new PrismaClient({ adapter });
-
-export default prisma;
+export { PrismaPg } from "@prisma/adapter-pg";
+export { Pool } from "pg";
+export { PrismaClient } from "../prisma/generated/client";

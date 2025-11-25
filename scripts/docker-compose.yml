@@ -1,0 +1,23 @@
+name: showly_db
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    container_name: showly_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: showly_dev_user
+      POSTGRES_PASSWORD: dontchangeme
+      POSTGRES_DB: showly_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "showly_dev_user", "-d", "showly_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local

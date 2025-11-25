@@ -1,5 +1,17 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "enabled": true
+  },
+  "linter": {
+    "rules": {
+      "performance": {
+        "noBarrelFile": "off"
+      }
+    }
+  },
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -22,8 +34,5 @@
       "!**/.source"
     ]
   },
-  "extends": [
-    "ultracite/core",
-    "ultracite/next"
-  ]
+  "extends": ["ultracite/core", "ultracite/next"]
 }
