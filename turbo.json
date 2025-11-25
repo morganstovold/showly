@@ -1,9 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": [
-    "DATABASE_URL"
-  ],
   "tasks": {
     "build": {
       "dependsOn": [
@@ -15,7 +12,7 @@
         ".env*"
       ],
       "outputs": [
-        "dist/**"
+        ".next/**"
       ]
     },
     "lint": {
@@ -48,8 +45,10 @@
       "persistent": true
     },
     "db:generate": {
-      "cache": false,
-      "persistent": true
+      "env": [
+        "DATABASE_URL"
+      ],
+      "cache": false
     }
   }
 }
