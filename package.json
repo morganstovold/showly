@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "check": "biome check --write .",
-    "dev": "turbo db:generate db:studio dev",
+    "dev": "turbo db:studio dev",
     "build": "turbo build",
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
