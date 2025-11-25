@@ -1,7 +1,5 @@
 # showly
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Self, and more.
-
 ## Features
 
 - **TypeScript** - For type safety and improved developer experience
@@ -40,7 +38,7 @@ Then, run the development server:
 pnpm run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see your fullstack application.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see your fullstack application.
 
 
 
@@ -55,8 +53,7 @@ showly/
 ├── apps/
 │   └── web/         # Fullstack application (Next.js)
 ├── packages/
-│   ├── api/         # API layer / business logic
-│   ├── auth/        # Authentication configuration & logic
+│   ├── config/      # Configuration files
 │   └── db/          # Database schema & queries
 ```
 
