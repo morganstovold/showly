@@ -38,7 +38,7 @@ if (process.env.PULL_REQUEST) {
 
 Your changes have been deployed to a preview environment:
 
-**🌐 Application URL:** ${web.url}
+**🌐 Web URL:** ${web.url}
 **🌐 API URL:** ${api.url}
 
 Built from commit ${process.env.GITHUB_SHA?.slice(0, 7)}
