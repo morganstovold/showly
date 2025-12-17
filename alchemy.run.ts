@@ -15,6 +15,7 @@ export const server = await Worker("server", {
   cwd: "apps/server",
   entrypoint: "src/index.ts",
   compatibility: "node",
+  domains: ["api.showly.co"],
   dev: {
     port: 3000,
   },
@@ -22,6 +23,7 @@ export const server = await Worker("server", {
 
 export const web = await TanStackStart("web", {
   cwd: "apps/web",
+  domains: ["showly.co"],
   bindings: {
     API_URL: server.url as string,
   },
