@@ -1,7 +1,8 @@
 import alchemy from "alchemy";
-import { TanStackStart, Worker } from "alchemy/cloudflare";
+import { Hyperdrive, TanStackStart, Worker } from "alchemy/cloudflare";
 import { GitHubComment } from "alchemy/github";
 import { Exec } from "alchemy/os";
+import { Database, Role } from "alchemy/planetscale";
 import { CloudflareStateStore } from "alchemy/state";
 
 import { config } from "dotenv";
@@ -12,87 +13,87 @@ const app = await alchemy("showly", {
   stateStore: (scope) => new CloudflareStateStore(scope),
 });
 
-// let hyperdrive: Awaited<ReturnType<typeof Hyperdrive>>;
+let hyperdrive: Awaited<ReturnType<typeof Hyperdrive>>;
 
-// if (app.local) {
-//   hyperdrive = await Hyperdrive("Hyperdrive", {
-//     origin: process.env.LOCAL_DATABASE_URL as string,
-//     caching: { disabled: true },
-//   });
+if (app.local) {
+  hyperdrive = await Hyperdrive("Hyperdrive", {
+    origin: process.env.LOCAL_DATABASE_URL as string,
+  });
 
-//   await Exec("DrizzleGenerate", {
-//     cwd: "packages/db",
-//     command: "bun run db:generate",
-//     env: {
-//       DATABASE_URL: process.env.LOCAL_DATABASE_URL as string,
-//     },
-//     memoize: {
-//       patterns: ["drizzle.config.ts", "src/schema.ts"],
-//     },
-//   });
+  await Exec("DrizzleGenerate", {
+    cwd: "packages/db",
+    command: "bun run db:generate",
+    env: {
+      DATABASE_URL: process.env.LOCAL_DATABASE_URL as string,
+    },
+    memoize: {
+      patterns: ["drizzle.config.ts", "src/schema.ts"],
+    },
+  });
 
-//   // Apply migrations to the local database
-//   await Exec("DrizzleMigrate", {
-//     cwd: "packages/db",
-//     command:
-//       process.platform === "win32"
-//         ? `cmd /C "bun run db:migrate || if %ERRORLEVEL%==9 exit 0 else exit %ERRORLEVEL%"`
-//         : `sh -c 'bun run db:migrate || ( [ $? -eq 9 ] && exit 0 ); exit $?'`,
-//     env: {
-//       DATABASE_URL: process.env.LOCAL_DATABASE_URL as string,
-//     },
-//     memoize: {
-//       patterns: ["drizzle.config.ts", "drizzle/*.sql"],
-//     },
-//   });
-// } else {
-//   const database = await Database("database", {
-//     name: "showly-database",
-//     clusterSize: "PS_5",
-//     region: {
-//       slug: "us-west",
-//     },
+  // Apply migrations to the local database
+  await Exec("DrizzleMigrate", {
+    cwd: "packages/db",
+    command:
+      process.platform === "win32"
+        ? `cmd /C "bun run db:migrate || if %ERRORLEVEL%==9 exit 0 else exit %ERRORLEVEL%"`
+        : `sh -c 'bun run db:migrate || ( [ $? -eq 9 ] && exit 0 ); exit $?'`,
+    env: {
+      DATABASE_URL: process.env.LOCAL_DATABASE_URL as string,
+    },
+    memoize: {
+      patterns: ["drizzle.config.ts", "drizzle/*.sql"],
+    },
+  });
+} else {
+  const database = await Database("database", {
+    name: "showly-database",
+    clusterSize: "PS_5",
+    region: {
+      slug: "us-west",
+    },
 
-//     kind: "postgresql",
-//   });
+    kind: "postgresql",
+  });
 
-//   const role = await Role("Role", {
-//     database,
-//     branch: database.defaultBranch,
-//     inheritedRoles: ["postgres"],
-//   });
+  const role = await Role("Role", {
+    database,
+    branch: database.defaultBranch,
+    inheritedRoles: ["postgres"],
+  });
 
-//   hyperdrive = await Hyperdrive("Hyperdrive", {
-//     origin: role.connectionUrl,
-//     caching: { disabled: true },
-//   });
+  console.log(role.connectionUrl);
 
-//   await Exec("DrizzleGenerate", {
-//     cwd: "packages/db",
-//     command: "bun run db:generate",
-//     env: {
-//       DATABASE_URL: role.connectionUrl,
-//     },
-//     memoize: {
-//       patterns: ["drizzle.config.ts", "src/schema.ts"],
-//     },
-//   });
+  hyperdrive = await Hyperdrive("Hyperdrive", {
+    origin: role.connectionUrl,
+  });
 
-//   // Apply migrations to the database
-//   await Exec("DrizzleMigrate", {
-//     cwd: "packages/db",
-//     command:
-//       process.platform === "win32"
-//         ? `cmd /C "bun run db:migrate || if %ERRORLEVEL%==9 exit 0 else exit %ERRORLEVEL%"`
-//         : `sh -c 'bun run db:migrate || ( [ $? -eq 9 ] && exit 0 ); exit $?'`,
-//     env: {
-//       DATABASE_URL: role.connectionUrl,
-//     },
-//     memoize: {
-//       patterns: ["drizzle.config.ts", "drizzle/*.sql"],
-//     },
-//   });
-// }
+  await Exec("DrizzleGenerate", {
+    cwd: "packages/db",
+    command: "bun run db:generate",
+    env: {
+      DATABASE_URL: role.connectionUrl,
+    },
+    memoize: {
+      patterns: ["drizzle.config.ts", "src/schema.ts"],
+    },
+  });
+
+  // Apply migrations to the database
+  await Exec("DrizzleMigrate", {
+    cwd: "packages/db",
+    command:
+      process.platform === "win32"
+        ? `cmd /C "bun run db:migrate || if %ERRORLEVEL%==9 exit 0 else exit %ERRORLEVEL%"`
+        : `sh -c 'bun run db:migrate || ( [ $? -eq 9 ] && exit 0 ); exit $?'`,
+    env: {
+      DATABASE_URL: role.connectionUrl,
+    },
+    memoize: {
+      patterns: ["drizzle.config.ts", "drizzle/*.sql"],
+    },
+  });
+}
 
 export const api = await Worker("api", {
   cwd: "apps/api",
@@ -100,7 +101,7 @@ export const api = await Worker("api", {
   compatibility: "node",
   domains: ["api.showly.co"],
   bindings: {
-    // HYPERDRIVE: hyperdrive,
+    HYPERDRIVE: hyperdrive,
   },
   dev: {
     port: 3000,
@@ -112,7 +113,7 @@ export const web = await TanStackStart("web", {
   domains: ["app.showly.co"],
   bindings: {
     API_URL: api.url as string,
-    // HYPERDRIVE: hyperdrive,
+    HYPERDRIVE: hyperdrive,
   },
 });
 
