@@ -1,5 +1,9 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "useIgnoreFile": true
+  },
   "files": {
     "ignoreUnknown": false,
     "includes": [
@@ -23,8 +27,12 @@
       "!**/convex/_generated"
     ]
   },
-  "extends": [
-    "ultracite/core",
-    "ultracite/react"
-  ]
+  "linter": {
+    "rules": {
+      "style": {
+        "useConsistentTypeDefinitions": "off"
+      }
+    }
+  },
+  "extends": ["ultracite/core", "ultracite/react"]
 }
