@@ -51,7 +51,7 @@ if (app.local) {
     name: "showly-database",
     clusterSize: "PS_5",
     region: {
-      slug: "us-west-2",
+      slug: "us-west",
     },
 
     kind: "postgresql",
