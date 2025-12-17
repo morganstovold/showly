@@ -31,7 +31,7 @@ export const web = await TanStackStart("web", {
 
 if (process.env.PULL_REQUEST) {
   await GitHubComment("preview-comment", {
-    owner: "morgannstovold",
+    owner: "morganstovold",
     repository: "showly",
     issueNumber: Number(process.env.PULL_REQUEST),
     body: `## 🚀 Preview Deployed
