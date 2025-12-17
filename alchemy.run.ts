@@ -47,6 +47,7 @@ if (app.local) {
   });
 } else {
   const database = await Database("database", {
+    adopt: true,
     name: "showly-database",
     clusterSize: "PS_5",
     region: {
@@ -61,8 +62,6 @@ if (app.local) {
     branch: database.defaultBranch,
     inheritedRoles: ["postgres"],
   });
-
-  console.log(role.connectionUrl);
 
   hyperdrive = await Hyperdrive("Hyperdrive", {
     origin: role.connectionUrl,
