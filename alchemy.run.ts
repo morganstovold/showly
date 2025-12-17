@@ -46,7 +46,7 @@ await Exec("DrizzleMigrate", {
   },
 });
 
-export const api = await Worker("api", {
+export const api = await Worker("Api", {
   cwd: "apps/api",
   entrypoint: "src/index.ts",
   compatibility: "node",
@@ -59,7 +59,7 @@ export const api = await Worker("api", {
   },
 });
 
-export const web = await TanStackStart("web", {
+export const web = await TanStackStart("Web", {
   cwd: "apps/web",
   domains: ["app.showly.co"],
   bindings: {
@@ -69,7 +69,7 @@ export const web = await TanStackStart("web", {
 });
 
 if (process.env.PULL_REQUEST) {
-  await GitHubComment("preview-comment", {
+  await GitHubComment("PreviewComment", {
     owner: "morganstovold",
     repository: "showly",
     issueNumber: Number(process.env.PULL_REQUEST),
