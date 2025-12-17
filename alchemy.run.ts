@@ -15,6 +15,7 @@ export const api = await Worker("api", {
   cwd: "apps/api",
   entrypoint: "src/index.ts",
   compatibility: "node",
+  domains: ["api.showly.co"],
   dev: {
     port: 3000,
   },
@@ -22,6 +23,7 @@ export const api = await Worker("api", {
 
 export const web = await TanStackStart("web", {
   cwd: "apps/web",
+  domains: ["showly.co"],
   bindings: {
     API_URL: api.url as string,
   },
@@ -29,7 +31,7 @@ export const web = await TanStackStart("web", {
 
 if (process.env.PULL_REQUEST) {
   await GitHubComment("preview-comment", {
-    owner: "morgannstovold",
+    owner: "morganstovold",
     repository: "showly",
     issueNumber: Number(process.env.PULL_REQUEST),
     body: `## 🚀 Preview Deployed
