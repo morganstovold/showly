@@ -11,8 +11,8 @@ const app = await alchemy("showly", {
   stateStore: (scope) => new CloudflareStateStore(scope),
 });
 
-export const server = await Worker("server", {
-  cwd: "apps/server",
+export const api = await Worker("api", {
+  cwd: "apps/api",
   entrypoint: "src/index.ts",
   compatibility: "node",
   dev: {
@@ -23,7 +23,7 @@ export const server = await Worker("server", {
 export const web = await TanStackStart("web", {
   cwd: "apps/web",
   bindings: {
-    API_URL: server.url as string,
+    API_URL: api.url as string,
   },
 });
 
@@ -36,8 +36,8 @@ if (process.env.PULL_REQUEST) {
 
 Your changes have been deployed to a preview environment:
 
-**🌐 Application URL:** ${web.url}
-**🌐 API URL:** ${server.url}
+**🌐 Web URL:** ${web.url}
+**🌐 API URL:** ${api.url}
 
 Built from commit ${process.env.GITHUB_SHA?.slice(0, 7)}
 
