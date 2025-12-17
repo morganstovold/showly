@@ -15,6 +15,7 @@ const app = await alchemy("showly", {
 const databaseUrl = alchemy.secret(process.env.DATABASE_URL as string);
 
 const hyperdrive = await Hyperdrive("Hyperdrive", {
+  adopt: true,
   name: "showly-hyperdrive",
   origin: databaseUrl,
 });
