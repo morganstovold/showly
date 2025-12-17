@@ -11,16 +11,19 @@ const app = await alchemy("showly", {
   stateStore: (scope) => new CloudflareStateStore(scope),
 });
 
-export const web = await TanStackStart("web", {
-  cwd: "apps/web",
-});
-
 export const server = await Worker("server", {
   cwd: "apps/server",
   entrypoint: "src/index.ts",
   compatibility: "node",
   dev: {
     port: 3000,
+  },
+});
+
+export const web = await TanStackStart("web", {
+  cwd: "apps/web",
+  bindings: {
+    API_URL: server.url as string,
   },
 });
 
