@@ -1,0 +1,22 @@
+{
+  "name": "@showly/auth",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": {
+      "types": "./src/client.ts",
+      "default": "./src/client.ts"
+    },
+    "./server": {
+      "types": "./src/server.ts",
+      "default": "./src/server.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@showly/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@showly/config": "workspace:*"
+  }
+}

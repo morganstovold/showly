@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": {
-      "default": "./src/index.ts"
+    "./schema": {
+      "types": "./src/schema.ts",
+      "default": "./src/schema.ts"
     },
-    "./*": {
-      "default": "./src/*.ts"
+    "./client": {
+      "types": "./src/client.ts",
+      "default": "./src/client.ts"
     }
   },
   "scripts": {

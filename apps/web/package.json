@@ -8,6 +8,7 @@
     "dev": "vite dev"
   },
   "dependencies": {
+    "@showly/auth": "workspace:*",
     "@tanstack/react-form": "^1.23.5",
     "@tailwindcss/vite": "^4.1.8",
     "@tanstack/react-query": "^5.90.12",
@@ -42,6 +43,7 @@
     "typescript": "catalog:",
     "@showly/config": "workspace:*",
     "alchemy": "catalog:",
-    "@cloudflare/vite-plugin": "^1.17.1"
+    "@cloudflare/vite-plugin": "^1.17.1",
+    "@cloudflare/workers-types": "^4.20241127.0"
   }
 }

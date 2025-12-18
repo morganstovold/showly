@@ -27,6 +27,9 @@
     "rules": {
       "style": {
         "useConsistentTypeDefinitions": "off"
+      },
+      "performance": {
+        "noNamespaceImport": "off"
       }
     }
   },

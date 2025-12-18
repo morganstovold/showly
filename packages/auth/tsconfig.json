@@ -7,10 +7,12 @@
     "outDir": "dist",
     "composite": true,
     "strictNullChecks": true,
+    "rootDir": "../../",
     "baseUrl": ".",
     "paths": {
-      "@showly/db/*": ["./src/*"]
+      "@showly/auth/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../../alchemy.run.ts"],
+  "references": [{ "path": "../db" }]
 }

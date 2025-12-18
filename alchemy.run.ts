@@ -1,5 +1,10 @@
 import alchemy from "alchemy";
-import { Hyperdrive, TanStackStart, Worker } from "alchemy/cloudflare";
+import {
+  Hyperdrive,
+  KVNamespace,
+  TanStackStart,
+  Worker,
+} from "alchemy/cloudflare";
 import { GitHubComment } from "alchemy/github";
 import { Exec } from "alchemy/os";
 import { CloudflareStateStore } from "alchemy/state";
@@ -46,6 +51,11 @@ await Exec("DrizzleMigrate", {
   },
 });
 
+const kv = await KVNamespace("showly-kv", {
+  title: "showly-kv",
+  adopt: true,
+});
+
 export const api = await Worker("Api", {
   cwd: "apps/api",
   entrypoint: "src/index.ts",
@@ -53,6 +63,7 @@ export const api = await Worker("Api", {
   domains: ["api.showly.co"],
   bindings: {
     HYPERDRIVE: hyperdrive,
+    KV: kv,
   },
   dev: {
     port: 3000,
@@ -63,8 +74,11 @@ export const web = await TanStackStart("Web", {
   cwd: "apps/web",
   domains: ["app.showly.co"],
   bindings: {
-    API_URL: api.url as string,
     HYPERDRIVE: hyperdrive,
+    KV: kv,
+    API_URL: api.url as string,
+    GITHUB_CLIENT_ID: alchemy.secret(process.env.GITHUB_CLIENT_ID),
+    GITHUB_CLIENT_SECRET: alchemy.secret(process.env.GITHUB_CLIENT_SECRET),
   },
 });
 

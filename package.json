@@ -29,6 +29,7 @@
     "destroy": "alchemy destroy"
   },
   "dependencies": {
+    "better-auth": "^1.4.7",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
