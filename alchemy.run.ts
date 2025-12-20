@@ -55,9 +55,8 @@ if (app.stage === "prod" || app.stage.startsWith("pr-")) {
 		const branch = await Branch(`showly-${app.stage}`, {
 			name: `showly-${app.stage}`,
 			database,
-			parentBranch: database.defaultBranch,
 			isProduction: false,
-			clusterSize: "PS_DEV",
+			parentBranch: database.defaultBranch,
 			delete: true,
 		});
 
