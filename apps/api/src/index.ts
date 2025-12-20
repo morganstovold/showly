@@ -30,6 +30,6 @@ app.use(
 	})
 );
 
-app.get("/", (c) => c.text("OKkkkk"));
+app.get("/", (c) => c.text("Ok feat/test"));
 
 export default app;
