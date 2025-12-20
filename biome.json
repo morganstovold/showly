@@ -23,10 +23,16 @@
       "!**/convex/_generated"
     ]
   },
+  "formatter": {
+    "indentStyle": "tab",
+    "indentWidth": 2
+  },
   "linter": {
     "rules": {
       "style": {
-        "useConsistentTypeDefinitions": "off"
+        "useConsistentTypeDefinitions": "off",
+        "noNestedTernary": "off",
+        "useFilenamingConvention": "off"
       },
       "performance": {
         "noNamespaceImport": "off"

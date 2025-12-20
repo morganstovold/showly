@@ -14,7 +14,8 @@
   },
   "scripts": {},
   "dependencies": {
-    "@showly/db": "workspace:*"
+    "@showly/db": "workspace:*",
+    "better-auth": "^1.4.7"
   },
   "devDependencies": {
     "@showly/config": "workspace:*"

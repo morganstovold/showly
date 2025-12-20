@@ -4,6 +4,6 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 export const getDB = (binding: Hyperdrive) => {
-  const db = postgres(binding.connectionString);
-  return drizzle(db, { schema });
+	const db = postgres(binding.connectionString);
+	return drizzle(db, { schema });
 };

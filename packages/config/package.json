@@ -1,5 +1,10 @@
 {
   "name": "@showly/config",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts",
+    "./tsconfig.base.json": "./tsconfig.base.json"
+  }
 }

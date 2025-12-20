@@ -6,13 +6,13 @@ import type { api } from "../../../alchemy.run";
 export type CloudflareEnv = typeof api.Env;
 
 declare global {
-  type Env = CloudflareEnv;
+	type Env = CloudflareEnv;
 }
 
 declare module "cloudflare:workers" {
-  // biome-ignore lint/style/noNamespace: n/a
-  namespace Cloudflare {
-    // biome-ignore lint/nursery/noShadow: n/a
-    export interface Env extends CloudflareEnv {}
-  }
+	// biome-ignore lint/style/noNamespace: n/a
+	namespace Cloudflare {
+		// biome-ignore lint/nursery/noShadow: n/a
+		export interface Env extends CloudflareEnv {}
+	}
 }
