@@ -58,6 +58,7 @@ if (app.stage === "prod" || app.stage.startsWith("pr-")) {
 			isProduction: false,
 			parentBranch: database.defaultBranch,
 			delete: true,
+			adopt: true,
 		});
 
 		const role = await Role("Role", {
