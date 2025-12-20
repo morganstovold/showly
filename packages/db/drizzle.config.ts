@@ -11,5 +11,9 @@ export default defineConfig({
 		// biome-ignore lint/style/noNonNullAssertion: n/a
 		url: process.env.DATABASE_URL!,
 	},
+	migrations: {
+		table: "migrations",
+		schema: "public",
+	},
 	verbose: false,
 });
