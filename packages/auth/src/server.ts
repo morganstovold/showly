@@ -7,6 +7,7 @@ type EnvWithBindings = {
 	KV: KVNamespace;
 	WEB_URL: string;
 	API_URL: string;
+	BETTER_AUTH_SECRET: string;
 };
 
 const PR_NUMBER_REGEX = /pr-\d+/;
@@ -21,6 +22,7 @@ export const getAuth = (env: EnvWithBindings) => {
 	const isProd = env.WEB_URL === "https://app.showly.co";
 
 	return betterAuth({
+		secret: env.BETTER_AUTH_SECRET,
 		database: drizzleAdapter(db, {
 			provider: "pg",
 		}),

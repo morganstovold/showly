@@ -122,6 +122,9 @@ export const api = await Worker("Api", {
 		KV: kv,
 		WEB_URL: webDomain,
 		API_URL: apiDomain,
+		BETTER_AUTH_SECRET: alchemy.secret(
+			process.env.BETTER_AUTH_SECRET as string
+		),
 	},
 	dev: {
 		port: 3002,
@@ -137,6 +140,9 @@ export const web = await TanStackStart("Web", {
 		KV: kv,
 		API_URL: apiDomain,
 		WEB_URL: webDomain,
+		BETTER_AUTH_SECRET: alchemy.secret(
+			process.env.BETTER_AUTH_SECRET as string
+		),
 	},
 });
 
