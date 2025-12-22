@@ -1,9 +1,10 @@
 import { authClient } from "@showly/auth/client";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { getCurrentUser } from "../lib/auth";
 
 export const Route = createFileRoute("/dashboard")({
-	beforeLoad: async ({ location }) => {
+	beforeLoad: async ({ location, context }) => {
 		const user = await getCurrentUser();
 
 		if (!user) {
@@ -13,14 +14,44 @@ export const Route = createFileRoute("/dashboard")({
 			});
 		}
 
-		return { user };
+		return { user, API_URL: context.API_URL };
 	},
 	component: DashboardComponent,
 });
 
 function DashboardComponent() {
-	const { user } = Route.useRouteContext();
+	const { user, API_URL } = Route.useRouteContext();
 	const navigate = useNavigate();
+
+	const [apiResponse, setApiResponse] = useState<JSON | null>(null);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const fetchUserData = async () => {
+		setLoading(true);
+		setError(null);
+
+		try {
+			const response = await fetch(`${API_URL}/v1/me`, {
+				credentials: "include", // Important: send cookies
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (!response.ok) {
+				throw new Error(`API Error: ${response.status} ${response.statusText}`);
+			}
+
+			const data = (await response.json()) as JSON;
+			setApiResponse(data);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to fetch");
+			setApiResponse(null);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleSignOut = async () => {
 		await authClient.signOut();
@@ -73,6 +104,48 @@ function DashboardComponent() {
 						<p className="mt-4 text-muted-foreground text-sm">
 							No recent activity to display
 						</p>
+					</div>
+				</div>
+
+				{/* API Test Section */}
+				<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+					<div className="flex items-center justify-between">
+						<h3 className="font-semibold text-lg">API Test: /api/v1/me</h3>
+						<button
+							className="rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
+							disabled={loading}
+							onClick={fetchUserData}
+							type="button"
+						>
+							{loading ? "Loading..." : "Fetch Data"}
+						</button>
+					</div>
+
+					<div className="mt-4">
+						<p className="mb-2 text-muted-foreground text-sm">
+							API URL:{" "}
+							<code className="rounded bg-muted px-1 py-0.5">{API_URL}</code>
+						</p>
+
+						{error !== null && (
+							<div className="rounded-md border border-destructive bg-destructive/10 p-3 text-destructive text-sm">
+								Error: {error}
+							</div>
+						)}
+
+						{apiResponse !== null && (
+							<div className="overflow-auto rounded-md bg-muted p-4">
+								<pre className="text-xs">
+									{JSON.stringify(apiResponse, null, 2)}
+								</pre>
+							</div>
+						)}
+
+						{!(apiResponse || error || loading) && (
+							<p className="text-muted-foreground text-sm italic">
+								Click "Fetch Data" to test the API endpoint
+							</p>
+						)}
 					</div>
 				</div>
 			</div>

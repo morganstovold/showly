@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
 function HomeComponent() {
 	return (
 		<div className="container mx-auto max-w-3xl px-4 py-2">
-			<h1>Homeeeee</h1>
+			<h1>Homeeeee feat/test</h1>
 		</div>
 	);
 }
