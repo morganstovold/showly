@@ -5,19 +5,20 @@ import { betterAuth } from "better-auth/minimal";
 type EnvWithBindings = {
 	HYPERDRIVE: Hyperdrive;
 	KV: KVNamespace;
+	WEB_URL: string;
+	API_URL: string;
 };
 
-export const getAuth = (env: EnvWithBindings) => {
-	if (!env.HYPERDRIVE) {
-		throw new Error(
-			"HYPERDRIVE binding is required but not found in environment"
-		);
-	}
-	if (!env.KV) {
-		throw new Error("KV binding is required but not found in environment");
-	}
+const PR_NUMBER_REGEX = /pr-\d+/;
 
+export const getAuth = (env: EnvWithBindings) => {
 	const db = getDB(env.HYPERDRIVE);
+
+	const isLocal = env.WEB_URL.includes("localhost");
+	const isPR =
+		env.WEB_URL.includes(".app.showly.co") &&
+		!env.WEB_URL.startsWith("https://app.showly.co");
+	const isProd = env.WEB_URL === "https://app.showly.co";
 
 	return betterAuth({
 		database: drizzleAdapter(db, {
@@ -45,5 +46,45 @@ export const getAuth = (env: EnvWithBindings) => {
 				await env.KV.delete(key);
 			},
 		},
+		baseURL: env.WEB_URL,
+
+		advanced: {
+			cookiePrefix: "showly",
+			useSecureCookies: !isLocal, // HTTPS in prod & PR previews
+
+			crossSubDomainCookies: {
+				enabled: isProd || isPR, // Enable for all .showly.co subdomains
+				domain: ".showly.co", // Works for app.showly.co, api.showly.co, pr-123.app.showly.co, team.showly.co
+			},
+		},
+
+		trustedOrigins: [
+			env.WEB_URL,
+			env.API_URL,
+			...(isProd
+				? [
+						"https://showly.co", // Marketing site
+						"https://*.showly.co", // All subdomains (teams, etc)
+					]
+				: []),
+			...(isPR
+				? [
+						// Extract PR number and allow those preview subdomains
+						`https://${env.WEB_URL.match(PR_NUMBER_REGEX)?.[0]}.showly.co`,
+					]
+				: []),
+			...(isLocal
+				? [
+						"http://localhost:3000", // showly.co (marketing)
+						"http://localhost:3001", // app.showly.co
+						"http://localhost:3002", // api.showly.co
+					]
+				: []),
+		],
 	});
 };
+
+export type Session = ReturnType<
+	typeof getAuth
+>["$Infer"]["Session"]["session"];
+export type User = ReturnType<typeof getAuth>["$Infer"]["Session"]["user"];

@@ -1,3 +1,4 @@
+import { env } from "cloudflare:workers";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 // import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
@@ -7,7 +8,10 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { createServerFn } from "@tanstack/react-start";
 import appCss from "../index.css?url";
+
+const getAPIUrl = createServerFn({ method: "GET" }).handler(() => env.API_URL);
 
 export const Route = createRootRoute({
 	head: () => ({
@@ -30,7 +34,9 @@ export const Route = createRootRoute({
 			},
 		],
 	}),
-
+	beforeLoad: async () => ({
+		API_URL: await getAPIUrl(),
+	}),
 	component: RootDocument,
 });
 

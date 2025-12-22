@@ -10,6 +10,7 @@
     "destroy": "alchemy destroy"
   },
   "dependencies": {
+    "@showly/auth": "workspace:*",
     "hono": "^4.8.2",
     "dotenv": "catalog:",
     "zod": "catalog:"

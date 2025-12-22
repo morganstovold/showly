@@ -121,6 +121,7 @@ export const api = await Worker("Api", {
 		HYPERDRIVE: hyperdrive,
 		KV: kv,
 		WEB_URL: webDomain,
+		API_URL: apiDomain,
 	},
 	dev: {
 		port: 3002,
@@ -135,6 +136,7 @@ export const web = await TanStackStart("Web", {
 		HYPERDRIVE: hyperdrive,
 		KV: kv,
 		API_URL: apiDomain,
+		WEB_URL: webDomain,
 	},
 });
 

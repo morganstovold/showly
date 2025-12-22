@@ -1,35 +1,46 @@
-import { Hono } from "hono";
-import { cors } from "hono/cors";
+import { getAuth } from "@showly/auth/server";
 import { logger } from "hono/logger";
+import { factory } from "./lib";
+import { v1API } from "./v1/user";
 
-const app = new Hono<{ Bindings: Env }>();
+const app = factory().createApp();
 
 app.use(logger());
-app.use(
-	"/*",
-	cors({
-		origin: (origin, context) => {
-			const trustedFrontend = context.env.WEB_URL;
-			const apiKey = context.req.header("x-api-key");
 
-			if (origin === trustedFrontend) {
-				return origin;
-			}
+app.use("*", async (c, next) => {
+	const auth = getAuth(c.env);
+	c.set("auth", auth);
+	await next();
+});
 
-			if (apiKey) {
-				return origin;
-			}
+app.get("/", (c) => c.json({ status: "ok", version: "1.0.0" }));
+app.get("/health", (c) => c.json({ status: "healthy" }));
 
-			return trustedFrontend;
+app.route("/v1", v1API);
+
+app.notFound((c) =>
+	c.json(
+		{
+			error: "Not Found",
+			message: "The requested resource does not exist",
 		},
-		allowHeaders: ["Content-Type", "Authorization"],
-		allowMethods: ["POST", "GET", "OPTIONS"],
-		exposeHeaders: ["Content-Length"],
-		maxAge: 600,
-		credentials: true,
-	})
+		404
+	)
 );
 
-app.get("/", (c) => c.text("Ok feat/test"));
+app.onError((err, c) => {
+	console.error(`Error: ${err.message}`, err);
+
+	return c.json(
+		{
+			error: "Internal Server Error",
+			message:
+				process.env.NODE_ENV === "development"
+					? err.message
+					: "Something went wrong",
+		},
+		500
+	);
+});
 
 export default app;

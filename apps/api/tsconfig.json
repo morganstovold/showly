@@ -1,5 +1,6 @@
 {
   "extends": "@showly/config/tsconfig.base.json",
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "composite": true,
     "outDir": "dist",
